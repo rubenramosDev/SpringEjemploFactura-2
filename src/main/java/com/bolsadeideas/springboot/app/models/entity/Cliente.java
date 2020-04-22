@@ -1,16 +1,11 @@
 package com.bolsadeideas.springboot.app.models.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -21,80 +16,109 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Table(name = "clientes")
 public class Cliente implements Serializable {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@NotEmpty
-	private String nombre;
-	
-	@NotEmpty
-	private String apellido;
-	
-	@NotEmpty
-	@Email
-	private String email;
+    @NotEmpty
+    private String nombre;
 
-	@NotNull
-	@Column(name = "create_at")
-	@Temporal(TemporalType.DATE)
-	@DateTimeFormat(pattern="yyyy-MM-dd")
-	private Date createAt;
+    @NotEmpty
+    private String apellido;
 
-	private String foto;
-	
-	public Long getId() {
-		return id;
-	}
+    @NotEmpty
+    @Email
+    private String email;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @NotNull
+    @Column(name = "create_at")
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date createAt;
+    private String foto;
 
-	public String getNombre() {
-		return nombre;
-	}
+    /*Con mappedBy, se le indica cual es el atributo que le corresponde
+    de la otra clase.
+    Un cliente puede tener muchas facturas
+    * Con Eager, llamaria a todas las facutas que tiene el cliente
+    * Actualizacion en cascada...
+    orphanRemoval sirve para eliminar registros huerfanos que no estan asociados a ningun cliente*/
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Factura> facturas;
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
+    public Cliente() {
+        facturas = new ArrayList<>();
+    }
 
-	public String getApellido() {
-		return apellido;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setApellido(String apellido) {
-		this.apellido = apellido;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public String getNombre() {
+        return nombre;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-	public Date getCreateAt() {
-		return createAt;
-	}
+    public String getApellido() {
+        return apellido;
+    }
 
-	public void setCreateAt(Date createAt) {
-		this.createAt = createAt;
-	}
-	
-	public String getFoto() {
-		return foto;
-	}
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
 
-	public void setFoto(String foto) {
-		this.foto = foto;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	private static final long serialVersionUID = 1L;
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
+
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
+
+    public List<Factura> getFacturas() {
+        return facturas;
+    }
+
+    public void setFacturas(List<Factura> facturas) {
+        this.facturas = facturas;
+    }
+
+    public void addFactura(Factura factura) {
+        facturas.add(factura);
+    }
+
+    @Override
+    public String toString() {
+        return nombre + " " + apellido;
+    }
+
+    private static final long serialVersionUID = 1L;
 
 }
