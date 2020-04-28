@@ -12,12 +12,14 @@ import com.bolsadeideas.springboot.app.models.entity.Cliente;
 public interface IClienteService {
 	
 	public List<Cliente> findAll();
-	
+
 	public Page<Cliente> findAll(Pageable pageable);
 
 	public void save(Cliente cliente);
 	
 	public Cliente findOne(Long id);
+
+	public Cliente fecthByIdWithFacturas(Long id);
 	
 	public void delete(Long id);
 
@@ -31,4 +33,5 @@ public interface IClienteService {
 
 	public void deleteFactura(Long id);
 
+	public Factura fetchByIdWithClienteWithItemFacturaWithProducto(Long id);
 }

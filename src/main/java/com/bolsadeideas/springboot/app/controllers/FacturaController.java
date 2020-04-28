@@ -8,6 +8,7 @@ import com.bolsadeideas.springboot.app.models.service.IClienteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +20,7 @@ import javax.naming.Binding;
 import javax.validation.Valid;
 import java.util.List;
 
+@Secured("ROLE_ADMIN")
 @Controller
 @RequestMapping("/factura")
 @SessionAttributes("factura")
@@ -31,7 +33,8 @@ public class FacturaController {
 
     @GetMapping("/ver/{id}")
     public String ver(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
-        Factura factura = iClienteService.findFacturaById(id);
+        //Factura factura = iClienteService.findFacturaById(id);
+        Factura factura = iClienteService.fetchByIdWithClienteWithItemFacturaWithProducto(id);
         if (factura == null) {
             redirectAttributes.addFlashAttribute("error", "La factura no existe en los registros");
             return "redirect:/listar";

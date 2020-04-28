@@ -1,8 +1,12 @@
 package com.bolsadeideas.springboot.app.models.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,8 +22,10 @@ public class Factura implements Serializable {
     @NotEmpty
     private String descripcion;
     private String observacion;
+
     @Temporal(TemporalType.DATE)
     @Column(name = "create_at")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createAt;
 
     /*Muchas facturas pueden tener un solo cliente.
@@ -27,6 +33,7 @@ public class Factura implements Serializable {
      * Lazy, solo busc en la BD solo la busqueda que se le pidio, mientra que eager, trae
      * mas datos de los que se solicitan*/
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     private Cliente cliente;
 
     /*Se agrega la anotacion JoinColum para generar la llave
@@ -35,8 +42,8 @@ public class Factura implements Serializable {
     @JoinColumn(name = "factura_id")
     private List<ItemFactura> items;
 
-    public Factura(){
-        this.items= new ArrayList<ItemFactura>();
+    public Factura() {
+        this.items = new ArrayList<ItemFactura>();
     }
 
     /*Se agrega este metodo que genera la fecha antes de hacer persistencia en la BD*/
@@ -89,14 +96,15 @@ public class Factura implements Serializable {
         this.items.add(item);
     }
 
-    public Double getTotal(){
+    public Double getTotal() {
         Double total = 0.0;
-        for(ItemFactura item: items){
-            total+=item.calcularImporte();
+        for (ItemFactura item : items) {
+            total += item.calcularImporte();
         }
         return total;
     }
 
+    @XmlTransient
     public Cliente getCliente() {
         return cliente;
     }

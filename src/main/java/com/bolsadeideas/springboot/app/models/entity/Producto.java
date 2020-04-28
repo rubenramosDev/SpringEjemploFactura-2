@@ -1,5 +1,7 @@
 package com.bolsadeideas.springboot.app.models.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -13,12 +15,14 @@ public class Producto implements Serializable {
     private Long id;
     private String nombre;
     private Double precio;
+
     @Temporal(TemporalType.DATE)
     @Column(name = "create_at")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createAt;
 
     @PrePersist
-    public void prePersist(){
+    public void prePersist() {
         createAt = new Date();
     }
 
